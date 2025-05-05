@@ -2,6 +2,7 @@ import React from 'react';
 import { useData } from '../context/DataContext';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { formatCurrency, formatDate } from '../lib/utils';
+import { VentasList } from '../components/VentasList';
 
 const Dashboard = () => {
   const { ventas, productos, afiliados } = useData();
@@ -31,7 +32,7 @@ const Dashboard = () => {
     .slice(0, 5);
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 space-y-6">
       <h1 className="text-3xl font-bold mb-8">Dashboard de Ventas</h1>
 
       {/* Tarjetas de resumen */}
@@ -105,37 +106,8 @@ const Dashboard = () => {
         </CardContent>
       </Card>
 
-      {/* Últimas ventas */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Últimas Ventas</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {ventas.slice(-5).reverse().map((venta) => {
-              const producto = productos.find(p => p.id === venta.productoId);
-              const afiliado = afiliados.find(a => a.id === venta.afiliadoId);
-
-              return (
-                <div key={venta.id} className="flex items-center justify-between border-b pb-2">
-                  <div>
-                    <p className="font-medium">{producto?.nombre}</p>
-                    <p className="text-sm text-muted-foreground">
-                      Vendido por: {afiliado?.nombre}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium">{formatCurrency(venta.precioVenta)}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {formatDate(venta.fecha)}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Lista de ventas con funcionalidades de edición y eliminación */}
+      <VentasList />
     </div>
   );
 };

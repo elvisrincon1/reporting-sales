@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
 export type Proveedor = {
@@ -50,9 +49,12 @@ interface DataContextType {
   updateProducto: (producto: Producto) => void;
   deleteProducto: (id: string) => void;
   addVenta: (venta: Venta) => void;
+  updateVenta: (venta: Venta) => void;
+  deleteVenta: (id: string) => void;
   getProductoById: (id: string) => Producto | undefined;
   getAfiliadoById: (id: string) => Afiliado | undefined;
   getProveedorById: (id: string) => Proveedor | undefined;
+  getVentaById: (id: string) => Venta | undefined;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -65,32 +67,52 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Cargar datos desde localStorage al iniciar
   useEffect(() => {
-    const storedProveedores = localStorage.getItem('proveedores');
-    const storedAfiliados = localStorage.getItem('afiliados');
-    const storedProductos = localStorage.getItem('productos');
-    const storedVentas = localStorage.getItem('ventas');
+    try {
+      const storedProveedores = localStorage.getItem('proveedores');
+      const storedAfiliados = localStorage.getItem('afiliados');
+      const storedProductos = localStorage.getItem('productos');
+      const storedVentas = localStorage.getItem('ventas');
 
-    if (storedProveedores) setProveedores(JSON.parse(storedProveedores));
-    if (storedAfiliados) setAfiliados(JSON.parse(storedAfiliados));
-    if (storedProductos) setProductos(JSON.parse(storedProductos));
-    if (storedVentas) setVentas(JSON.parse(storedVentas));
+      if (storedProveedores) setProveedores(JSON.parse(storedProveedores));
+      if (storedAfiliados) setAfiliados(JSON.parse(storedAfiliados));
+      if (storedProductos) setProductos(JSON.parse(storedProductos));
+      if (storedVentas) setVentas(JSON.parse(storedVentas));
+    } catch (error) {
+      console.error('Error loading data from localStorage:', error);
+    }
   }, []);
 
   // Guardar datos en localStorage cuando cambien
   useEffect(() => {
-    localStorage.setItem('proveedores', JSON.stringify(proveedores));
+    try {
+      localStorage.setItem('proveedores', JSON.stringify(proveedores));
+    } catch (error) {
+      console.error('Error saving proveedores:', error);
+    }
   }, [proveedores]);
 
   useEffect(() => {
-    localStorage.setItem('afiliados', JSON.stringify(afiliados));
+    try {
+      localStorage.setItem('afiliados', JSON.stringify(afiliados));
+    } catch (error) {
+      console.error('Error saving afiliados:', error);
+    }
   }, [afiliados]);
 
   useEffect(() => {
-    localStorage.setItem('productos', JSON.stringify(productos));
+    try {
+      localStorage.setItem('productos', JSON.stringify(productos));
+    } catch (error) {
+      console.error('Error saving productos:', error);
+    }
   }, [productos]);
 
   useEffect(() => {
-    localStorage.setItem('ventas', JSON.stringify(ventas));
+    try {
+      localStorage.setItem('ventas', JSON.stringify(ventas));
+    } catch (error) {
+      console.error('Error saving ventas:', error);
+    }
   }, [ventas]);
 
   const addProveedor = (proveedor: Proveedor) => {
@@ -133,11 +155,21 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setVentas([...ventas, venta]);
   };
 
+  const updateVenta = (venta: Venta) => {
+    setVentas(ventas.map(v => v.id === venta.id ? venta : v));
+  };
+
+  const deleteVenta = (id: string) => {
+    setVentas(ventas.filter(v => v.id !== id));
+  };
+
   const getProductoById = (id: string) => productos.find(p => p.id === id);
   
   const getAfiliadoById = (id: string) => afiliados.find(a => a.id === id);
   
   const getProveedorById = (id: string) => proveedores.find(p => p.id === id);
+
+  const getVentaById = (id: string) => ventas.find(v => v.id === id);
 
   return (
     <DataContext.Provider
@@ -156,9 +188,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updateProducto,
         deleteProducto,
         addVenta,
+        updateVenta,
+        deleteVenta,
         getProductoById,
         getAfiliadoById,
-        getProveedorById
+        getProveedorById,
+        getVentaById
       }}
     >
       {children}

@@ -1,73 +1,94 @@
-# Welcome to your Lovable project
+# Sistema de Ventas - Reporting Sales
 
-## Project info
+Sistema de gestión de ventas con dashboard integrado para el seguimiento de métricas importantes.
 
-**URL**: https://lovable.dev/projects/576aa6fe-eeeb-4e68-ac87-0f04d241aa8e
+## Características
 
-## How can I edit this code?
+- Dashboard con métricas en tiempo real
+- Gestión de ventas
+- Control de inventario
+- Gestión de proveedores
+- Gestión de afiliados
+- Generación de informes
+- Interfaz moderna y responsive
 
-There are several ways of editing your application.
+## Tecnologías Utilizadas
 
-**Use Lovable**
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- shadcn/ui
+- Supabase
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/576aa6fe-eeeb-4e68-ac87-0f04d241aa8e) and start prompting.
+## Instalación
 
-Changes made via Lovable will be committed automatically to this repo.
+1. Clonar el repositorio:
+```bash
+git clone https://github.com/elvisrincon1/reporting-sales.git
+cd reporting-sales
+```
 
-**Use your preferred IDE**
+2. Instalar dependencias:
+```bash
+npm install
+```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+3. Iniciar el servidor de desarrollo:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Estructura del Proyecto
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- `/src/components`: Componentes reutilizables
+- `/src/pages`: Páginas principales de la aplicación
+- `/src/context`: Contextos de React para el manejo de estado
+- `/src/hooks`: Hooks personalizados
+- `/src/lib`: Utilidades y funciones auxiliares
+- `/src/integrations`: Integraciones con servicios externos (Supabase)
 
-**Use GitHub Codespaces**
+## Módulos Principales
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. **Dashboard**
+   - Resumen de ventas totales
+   - Productos más vendidos
+   - Métricas diarias
+   - Total de afiliados
 
-## What technologies are used for this project?
+2. **Reportar Venta**
+   - Formulario de registro de ventas
+   - Selección de productos y afiliados
+   - Cálculo automático de totales
 
-This project is built with:
+3. **Inventario**
+   - Listado de productos
+   - Control de stock
+   - Precios de compra y venta
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+4. **Proveedores**
+   - Gestión de proveedores
+   - Información de contacto
+   - Historial de compras
 
-## How can I deploy this project?
+5. **Afiliados**
+   - Gestión de afiliados
+   - Historial de ventas por afiliado
+   - Comisiones
 
-Simply open [Lovable](https://lovable.dev/projects/576aa6fe-eeeb-4e68-ac87-0f04d241aa8e) and click on Share -> Publish.
+6. **Informes**
+   - Generación de reportes
+   - Exportación de datos
+   - Análisis de ventas
 
-## Can I connect a custom domain to my Lovable project?
+## Contribución
 
-Yes, you can!
+1. Fork el proyecto
+2. Cree una rama para su característica (`git checkout -b feature/AmazingFeature`)
+3. Commit sus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abra un Pull Request
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Licencia
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Distribuido bajo la Licencia MIT. Ver `LICENSE` para más información.
