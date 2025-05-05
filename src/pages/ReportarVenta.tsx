@@ -1,17 +1,15 @@
-
-import React, { useState, useEffect } from 'react';
-import { useData, Afiliado, Producto, Venta } from '@/context/DataContext';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import React, { useState } from 'react';
+import { useData } from '../context/DataContext';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '../components/ui/command';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
-import { cn } from '@/lib/utils';
-import { Calendar } from '@/components/ui/calendar';
+import { cn } from '../lib/utils';
+import { Calendar } from '../components/ui/calendar';
 import { toast } from 'sonner';
 
 const ReportarVenta = () => {
@@ -41,7 +39,7 @@ const ReportarVenta = () => {
       return;
     }
 
-    const nuevaVenta: Venta = {
+    const nuevaVenta = {
       id: Date.now().toString(),
       fecha: format(fecha, 'yyyy-MM-dd'),
       afiliadoId,
@@ -64,7 +62,8 @@ const ReportarVenta = () => {
   };
 
   const filteredAfiliados = afiliados.filter(afiliado => 
-    afiliado.nombre.toLowerCase().includes(afiliadoSearch.toLowerCase())
+    afiliado.nombre.toLowerCase().includes(afiliadoSearch.toLowerCase()) ||
+    afiliado.identificacion.toLowerCase().includes(afiliadoSearch.toLowerCase())
   );
 
   const filteredProductos = productos.filter(producto => 
@@ -94,7 +93,7 @@ const ReportarVenta = () => {
                       {fecha ? format(fecha, 'dd/MM/yyyy') : 'Seleccionar fecha'}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0 z-50" align="start">
+                  <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
                       selected={fecha}
@@ -103,7 +102,6 @@ const ReportarVenta = () => {
                         setOpenCalendar(false);
                       }}
                       initialFocus
-                      className="p-3 pointer-events-auto"
                     />
                   </PopoverContent>
                 </Popover>
@@ -135,22 +133,23 @@ const ReportarVenta = () => {
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[300px] p-0 z-50">
+                  <PopoverContent className="w-[300px] p-0">
                     <Command>
                       <CommandInput 
                         placeholder="Buscar afiliado..." 
                         value={afiliadoSearch}
                         onValueChange={setAfiliadoSearch}
                       />
-                      <CommandEmpty>No se encontraron afiliados.</CommandEmpty>
                       <CommandList>
+                        <CommandEmpty>No se encontraron afiliados.</CommandEmpty>
                         <CommandGroup>
                           {filteredAfiliados.map((afiliado) => (
                             <CommandItem
                               key={afiliado.id}
-                              value={afiliado.id}
-                              onSelect={(currentValue) => {
-                                setAfiliadoId(currentValue);
+                              value={afiliado.nombre}
+                              onSelect={() => {
+                                setAfiliadoId(afiliado.id);
+                                setAfiliadoSearch('');
                                 setOpenAfiliado(false);
                               }}
                             >
@@ -160,7 +159,7 @@ const ReportarVenta = () => {
                                   afiliadoId === afiliado.id ? "opacity-100" : "opacity-0"
                                 )}
                               />
-                              {afiliado.nombre}
+                              {afiliado.nombre} - {afiliado.identificacion}
                             </CommandItem>
                           ))}
                         </CommandGroup>
@@ -184,22 +183,23 @@ const ReportarVenta = () => {
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[300px] p-0 z-50">
+                  <PopoverContent className="w-[300px] p-0">
                     <Command>
                       <CommandInput 
                         placeholder="Buscar producto..." 
                         value={productoSearch}
                         onValueChange={setProductoSearch}
                       />
-                      <CommandEmpty>No se encontraron productos.</CommandEmpty>
                       <CommandList>
+                        <CommandEmpty>No se encontraron productos.</CommandEmpty>
                         <CommandGroup>
                           {filteredProductos.map((producto) => (
                             <CommandItem
                               key={producto.id}
-                              value={producto.id}
-                              onSelect={(currentValue) => {
-                                setProductoId(currentValue);
+                              value={producto.nombre}
+                              onSelect={() => {
+                                setProductoId(producto.id);
+                                setProductoSearch('');
                                 setOpenProducto(false);
                               }}
                             >

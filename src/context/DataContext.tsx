@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { initialAfiliados, initialProductos, initialProveedores, initialVentas } from '../data/initialData';
 
 export type Proveedor = {
   id: string;
@@ -65,7 +66,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [productos, setProductos] = useState<Producto[]>([]);
   const [ventas, setVentas] = useState<Venta[]>([]);
 
-  // Cargar datos desde localStorage al iniciar
+  // Cargar datos desde localStorage al iniciar o usar datos iniciales
   useEffect(() => {
     try {
       const storedProveedores = localStorage.getItem('proveedores');
@@ -73,12 +74,17 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const storedProductos = localStorage.getItem('productos');
       const storedVentas = localStorage.getItem('ventas');
 
-      if (storedProveedores) setProveedores(JSON.parse(storedProveedores));
-      if (storedAfiliados) setAfiliados(JSON.parse(storedAfiliados));
-      if (storedProductos) setProductos(JSON.parse(storedProductos));
-      if (storedVentas) setVentas(JSON.parse(storedVentas));
+      setProveedores(storedProveedores ? JSON.parse(storedProveedores) : initialProveedores);
+      setAfiliados(storedAfiliados ? JSON.parse(storedAfiliados) : initialAfiliados);
+      setProductos(storedProductos ? JSON.parse(storedProductos) : initialProductos);
+      setVentas(storedVentas ? JSON.parse(storedVentas) : initialVentas);
     } catch (error) {
-      console.error('Error loading data from localStorage:', error);
+      console.error('Error loading data:', error);
+      // Si hay error, usar datos iniciales
+      setProveedores(initialProveedores);
+      setAfiliados(initialAfiliados);
+      setProductos(initialProductos);
+      setVentas(initialVentas);
     }
   }, []);
 
