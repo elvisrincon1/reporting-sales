@@ -103,8 +103,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Funciones para agregar, actualizar y eliminar usando Supabase
   const addProveedor = async (proveedor: Proveedor) => {
-    const { error } = await supabase.from('proveedores').insert(proveedor);
-    if (error) console.error(error);
+    const { data, error } = await supabase.from<'proveedores', Proveedor>('proveedores').insert([proveedor]).select();
+    if (error) {
+      console.error(error);
+    } else if (data && data.length > 0) {
+      setProveedores((prev) => [...prev, data[0]]);
+    }
   };
 
   const updateProveedor = async (proveedor: Proveedor) => {
