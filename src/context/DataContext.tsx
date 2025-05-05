@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { initialAfiliados, initialProductos, initialProveedores, initialVentas } from '../data/initialData';
+import { supabase } from '../integrations/supabase/client';
 
 export type Proveedor = {
   id: string;
@@ -40,18 +40,18 @@ interface DataContextType {
   afiliados: Afiliado[];
   productos: Producto[];
   ventas: Venta[];
-  addProveedor: (proveedor: Proveedor) => void;
-  updateProveedor: (proveedor: Proveedor) => void;
-  deleteProveedor: (id: string) => void;
-  addAfiliado: (afiliado: Afiliado) => void;
-  updateAfiliado: (afiliado: Afiliado) => void;
-  deleteAfiliado: (id: string) => void;
-  addProducto: (producto: Producto) => void;
-  updateProducto: (producto: Producto) => void;
-  deleteProducto: (id: string) => void;
-  addVenta: (venta: Venta) => void;
-  updateVenta: (venta: Venta) => void;
-  deleteVenta: (id: string) => void;
+  addProveedor: (proveedor: Proveedor) => Promise<void>;
+  updateProveedor: (proveedor: Proveedor) => Promise<void>;
+  deleteProveedor: (id: string) => Promise<void>;
+  addAfiliado: (afiliado: Afiliado) => Promise<void>;
+  updateAfiliado: (afiliado: Afiliado) => Promise<void>;
+  deleteAfiliado: (id: string) => Promise<void>;
+  addProducto: (producto: Producto) => Promise<void>;
+  updateProducto: (producto: Producto) => Promise<void>;
+  deleteProducto: (id: string) => Promise<void>;
+  addVenta: (venta: Venta) => Promise<void>;
+  updateVenta: (venta: Venta) => Promise<void>;
+  deleteVenta: (id: string) => Promise<void>;
   getProductoById: (id: string) => Producto | undefined;
   getAfiliadoById: (id: string) => Afiliado | undefined;
   getProveedorById: (id: string) => Proveedor | undefined;
@@ -66,107 +66,100 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [productos, setProductos] = useState<Producto[]>([]);
   const [ventas, setVentas] = useState<Venta[]>([]);
 
-  // Cargar datos desde localStorage al iniciar o usar datos iniciales
+  // Cargar datos desde Supabase al iniciar
   useEffect(() => {
-    try {
-      const storedProveedores = localStorage.getItem('proveedores');
-      const storedAfiliados = localStorage.getItem('afiliados');
-      const storedProductos = localStorage.getItem('productos');
-      const storedVentas = localStorage.getItem('ventas');
+    const fetchData = async () => {
+      const { data: proveedoresData, error: proveedoresError } = await supabase.from('proveedores').select('*');
+      if (proveedoresError) console.error(proveedoresError);
+      else setProveedores(proveedoresData || []);
 
-      setProveedores(storedProveedores ? JSON.parse(storedProveedores) : initialProveedores);
-      setAfiliados(storedAfiliados ? JSON.parse(storedAfiliados) : initialAfiliados);
-      setProductos(storedProductos ? JSON.parse(storedProductos) : initialProductos);
-      setVentas(storedVentas ? JSON.parse(storedVentas) : initialVentas);
-    } catch (error) {
-      console.error('Error loading data:', error);
-      // Si hay error, usar datos iniciales
-      setProveedores(initialProveedores);
-      setAfiliados(initialAfiliados);
-      setProductos(initialProductos);
-      setVentas(initialVentas);
-    }
+      const { data: afiliadosData, error: afiliadosError } = await supabase.from('afiliados').select('*');
+      if (afiliadosError) console.error(afiliadosError);
+      else setAfiliados(afiliadosData || []);
+
+      const { data: productosData, error: productosError } = await supabase.from('productos').select('*');
+      if (productosError) console.error(productosError);
+      else setProductos(productosData || []);
+
+      const { data: ventasData, error: ventasError } = await supabase.from('ventas').select('*');
+      if (ventasError) console.error(ventasError);
+      else setVentas(ventasData || []);
+    };
+
+    fetchData();
+
+    // Suscripción a cambios en ventas usando la nueva API de Supabase 2.x
+    const channel = supabase
+      .channel('public:ventas')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'ventas' }, payload => {
+        fetchData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
-  // Guardar datos en localStorage cuando cambien
-  useEffect(() => {
-    try {
-      localStorage.setItem('proveedores', JSON.stringify(proveedores));
-    } catch (error) {
-      console.error('Error saving proveedores:', error);
-    }
-  }, [proveedores]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('afiliados', JSON.stringify(afiliados));
-    } catch (error) {
-      console.error('Error saving afiliados:', error);
-    }
-  }, [afiliados]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('productos', JSON.stringify(productos));
-    } catch (error) {
-      console.error('Error saving productos:', error);
-    }
-  }, [productos]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('ventas', JSON.stringify(ventas));
-    } catch (error) {
-      console.error('Error saving ventas:', error);
-    }
-  }, [ventas]);
-
-  const addProveedor = (proveedor: Proveedor) => {
-    setProveedores([...proveedores, proveedor]);
+  // Funciones para agregar, actualizar y eliminar usando Supabase
+  const addProveedor = async (proveedor: Proveedor) => {
+    const { error } = await supabase.from('proveedores').insert(proveedor);
+    if (error) console.error(error);
   };
 
-  const updateProveedor = (proveedor: Proveedor) => {
-    setProveedores(proveedores.map(p => p.id === proveedor.id ? proveedor : p));
+  const updateProveedor = async (proveedor: Proveedor) => {
+    const { error } = await supabase.from('proveedores').update(proveedor).eq('id', proveedor.id);
+    if (error) console.error(error);
   };
 
-  const deleteProveedor = (id: string) => {
-    setProveedores(proveedores.filter(p => p.id !== id));
+  const deleteProveedor = async (id: string) => {
+    const { error } = await supabase.from('proveedores').delete().eq('id', id);
+    if (error) console.error(error);
   };
 
-  const addAfiliado = (afiliado: Afiliado) => {
-    setAfiliados([...afiliados, afiliado]);
+  const addAfiliado = async (afiliado: Afiliado) => {
+    const { error } = await supabase.from('afiliados').insert(afiliado);
+    if (error) console.error(error);
   };
 
-  const updateAfiliado = (afiliado: Afiliado) => {
-    setAfiliados(afiliados.map(a => a.id === afiliado.id ? afiliado : a));
+  const updateAfiliado = async (afiliado: Afiliado) => {
+    const { error } = await supabase.from('afiliados').update(afiliado).eq('id', afiliado.id);
+    if (error) console.error(error);
   };
 
-  const deleteAfiliado = (id: string) => {
-    setAfiliados(afiliados.filter(a => a.id !== id));
+  const deleteAfiliado = async (id: string) => {
+    const { error } = await supabase.from('afiliados').delete().eq('id', id);
+    if (error) console.error(error);
   };
 
-  const addProducto = (producto: Producto) => {
-    setProductos([...productos, producto]);
+  const addProducto = async (producto: Producto) => {
+    const { error } = await supabase.from('productos').insert(producto);
+    if (error) console.error(error);
   };
 
-  const updateProducto = (producto: Producto) => {
-    setProductos(productos.map(p => p.id === producto.id ? producto : p));
+  const updateProducto = async (producto: Producto) => {
+    const { error } = await supabase.from('productos').update(producto).eq('id', producto.id);
+    if (error) console.error(error);
   };
 
-  const deleteProducto = (id: string) => {
-    setProductos(productos.filter(p => p.id !== id));
+  const deleteProducto = async (id: string) => {
+    const { error } = await supabase.from('productos').delete().eq('id', id);
+    if (error) console.error(error);
   };
 
-  const addVenta = (venta: Venta) => {
-    setVentas([...ventas, venta]);
+  const addVenta = async (venta: Venta) => {
+    const { error } = await supabase.from('ventas').insert(venta);
+    if (error) console.error(error);
   };
 
-  const updateVenta = (venta: Venta) => {
-    setVentas(ventas.map(v => v.id === venta.id ? venta : v));
+  const updateVenta = async (venta: Venta) => {
+    const { error } = await supabase.from('ventas').update(venta).eq('id', venta.id);
+    if (error) console.error(error);
   };
 
-  const deleteVenta = (id: string) => {
-    setVentas(ventas.filter(v => v.id !== id));
+  const deleteVenta = async (id: string) => {
+    const { error } = await supabase.from('ventas').delete().eq('id', id);
+    if (error) console.error(error);
   };
 
   const getProductoById = (id: string) => productos.find(p => p.id === id);

@@ -1,82 +1,85 @@
 export const initialAfiliados = [
   {
     id: "1",
-    nombre: "Juan Pérez",
-    identificacion: "V-12345678",
-    contacto: "0412-1234567"
+    nombre: "0225-FENDRY",
+    identificacion: "0225-FENDRY",
+    contacto: ""
   },
   {
     id: "2",
-    nombre: "María González",
-    identificacion: "V-23456789",
-    contacto: "0414-2345678"
-  },
-  {
-    id: "3",
-    nombre: "Carlos Rodríguez",
-    identificacion: "V-34567890",
-    contacto: "0416-3456789"
+    nombre: "GODSPLAN",
+    identificacion: "GODSPLAN",
+    contacto: ""
   }
 ];
 
 export const initialProductos = [
   {
     id: "1",
-    nombre: "Laptop HP",
-    precioCompra: 500,
-    precioVenta: 800,
+    nombre: "CHALECO",
+    precioCompra: 700,
+    precioVenta: 1100,
     proveedor1Id: "1"
   },
   {
     id: "2",
-    nombre: "Monitor Dell",
-    precioCompra: 150,
-    precioVenta: 250,
+    nombre: "AF-CHALECO",
+    precioCompra: 700,
+    precioVenta: 900,
     proveedor1Id: "1"
   },
   {
     id: "3",
-    nombre: "Teclado Mecánico",
-    precioCompra: 30,
-    precioVenta: 60,
+    nombre: "Repetidores WiFi 300MPS",
+    precioCompra: 480,
+    precioVenta: 740,
     proveedor1Id: "2"
+  },
+  {
+    id: "4",
+    nombre: "AF-Repetidores WiFi 300MPS",
+    precioCompra: 480,
+    precioVenta: 590,
+    proveedor1Id: "2"
+  },
+  {
+    id: "5",
+    nombre: "JUMPER+COMPRESOR",
+    precioCompra: 0,
+    precioVenta: 0,
+    proveedor1Id: "1"
   }
 ];
 
 export const initialProveedores = [
   {
     id: "1",
-    nombre: "TechSupply Inc",
-    contacto: "John Smith",
-    telefono: "0212-5551234",
-    email: "techsupply@example.com"
+    nombre: "ALGOTI",
+    contacto: "ALGOTI",
+    telefono: "1",
+    email: ""
   },
   {
     id: "2",
-    nombre: "Hardware Plus",
-    contacto: "Jane Doe",
-    telefono: "0212-5555678",
-    email: "hardwareplus@example.com"
+    nombre: "PLAZA NEZA",
+    contacto: "PLAZA NEZA",
+    telefono: "1",
+    email: ""
+  },
+  {
+    id: "3",
+    nombre: "WD TECNOLOGIA",
+    contacto: "WD TECNOLOGIA",
+    telefono: "1",
+    email: ""
+  },
+  {
+    id: "4",
+    nombre: "MOBICEL",
+    contacto: "MOBICEL",
+    telefono: "",
+    email: ""
   }
 ];
 
-export const initialVentas = [
-  {
-    id: "1",
-    fecha: "2024-05-05",
-    afiliadoId: "1",
-    productoId: "1",
-    cantidad: 1,
-    precioVenta: 800,
-    precioCompra: 500
-  },
-  {
-    id: "2",
-    fecha: "2024-05-05",
-    afiliadoId: "2",
-    productoId: "2",
-    cantidad: 2,
-    precioVenta: 500,
-    precioCompra: 300
-  }
-];
+export const initialVentas = [];
