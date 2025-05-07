@@ -40,14 +40,13 @@ const ReportarVenta = () => {
     }
 
     const nuevaVenta = {
-      id: Date.now().toString(),
       fecha: format(fecha, 'yyyy-MM-dd'),
       afiliadoId,
       productoId,
       cantidad,
       precioVenta: productoSeleccionado.precioVenta * cantidad,
       precioCompra: productoSeleccionado.precioCompra * cantidad
-    };
+    } as Omit<Venta, 'id'>;
 
     addVenta(nuevaVenta);
     
